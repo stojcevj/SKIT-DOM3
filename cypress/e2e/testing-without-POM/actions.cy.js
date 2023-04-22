@@ -67,7 +67,7 @@ context('Actions', () => {
         .click();
    });
 
-  it('Add product to Shopping Cart', () => {
+   it('Add product to Shopping Cart', () => {
     cy.get('#searchQuery')
         .click();
 
@@ -97,24 +97,27 @@ context('Actions', () => {
 
     cy.get('.fa-layers-counter.warn-notification')
         .should('have.text', '0');
-  });
+  }); 
 
   it('Find element that cannot be added to Shopping Cart', () => {
+    
+    cy.get('body').then((body) => {
+        while(body.find('.ribbon-sold').length <= 0){
+            cy.get('[aria-label="Next page"]')
+                .click();
+        }
 
-    const soldOut = cy.get('.ribbon-sold');
-
-    while(!soldOut){
-        cy.get('[aria-label="Next page"]')
-        .click();
-    }
-
-    soldOut.eq(0)
-        .parent()
-        .children()
-        .eq(2)
-        .click()
-        .get('.mat-simple-snack-bar-content')
-        .should('have.text', 'We are out of stock! Sorry for the inconvenience.')
+        if(body.find('.ribbon-sold')){
+            cy.get('.ribbon-sold').eq(0)
+                .parent()
+                .children()
+                .eq(2)
+                .click()
+                .get('.mat-simple-snack-bar-content')
+                .should('have.text', 'We are out of stock! Sorry for the inconvenience.')
+        }
+        
+    });
    
   });
 });
